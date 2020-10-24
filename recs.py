@@ -12,6 +12,8 @@ config = {
 firebase = Firebase(config)
 db = firebase.database()
 
+app = Flask(__name__)
+
 #Servlet to handle requests for users that can help
 @app.route('/rec', method=['POST'])
 def recommend():
