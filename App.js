@@ -9,6 +9,7 @@ import 'firebase/analytics';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import getRequests from './requests.js';
+import './post.js';
 
 firebase.initializeApp({
   apiKey: "AIzaSyCvi2swwP019a9pmwztVjWnXs1pLpjYGf8",
@@ -30,6 +31,7 @@ const db = firebase.database();
 function App() {
 
   const [user] = useAuthState(auth);
+  const [recs, setRecs] = useState([])
 
   return (
     <div className="App">
@@ -40,6 +42,10 @@ function App() {
 
       <section>
         {user ? <Feed /> : <SignIn />}
+      </section>
+
+      <section>
+        <PostPage/>
       </section>
 
     </div>
@@ -74,7 +80,7 @@ function Feed() {
   requests = getRequests(db, auth.getAuth())
 
   return (<>
-    <div className="feed">
+    <div className={"feed"}>
 
       {requests.map(req => <Request key={Math.floor(Math.random() * 10000).toString()} 
       name={req["name"]} contact={req["contact"]} 
@@ -90,13 +96,64 @@ function Request(props) {
 
   return (<>
     <div className={"request"}>
-      <p>{name}</p>
-      <p>{contact}</p>
-      <p>{type}</p>
-      <p>{text}</p>
+      <p>{"Name" + name}</p>
+      <p>{"Contact Information" + contact}</p>
+      <p>{"Request Type" + type}</p>
+      <p>{"Description" + text}</p>
     </div>
   </>)
 }
 
+function PostPage() {
+
+  for (let r in recs) {
+    let query = db.ref("users").orderByChild("name").equalTo(r).get().val()
+    let match = query.values()[0]
+    let name = match["name"]
+    let contact = match["contact_info"]
+    let postRecs = []
+    postRecs.push(<PostRecs name={name} contact={contact}/>)
+  }
+
+  return (<>
+    <div className={"postpage"}>
+      <PostForm/>
+      <h2>These people could help you with your request:</h2>
+      {postRecs}
+    </div>
+  </>)
+}
+
+function PostForm() {
+
+  return (<>
+  <form onSubmit={setRecs(post())}>
+    <label for="text">Description</label>
+    <textarea id="text" name="text" placeholder="I need help with..." rows="3"></textarea>
+
+    <label for="type">What type of request is this?</label>
+    <select name="type" id="type">
+      <option value="Food">Food</option>
+      <option value="Medicine">Medicine</option>
+      <option value="Social">Social</option>
+      <option value="Misc">Misc</option>
+    </select>
+
+    <input type="submit" value="Post"/>
+  </form>
+  </>)
+}
+
+function PostRecs(props) {
+
+  const {name, contact} = props.message;
+
+  return (<>
+    <div className={"Recs"}>
+      <p>{"Name" + name}</p>
+      <p>{"Contact" + contact}</p>
+    </div>
+  </>)
+}
 
 export default App;

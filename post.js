@@ -36,7 +36,8 @@ let post = () => {
 
     db.ref("requests").push(req)
 
-    return post_recs(req_loc, req_type)
+    type = {"Food": 1, "Medicine": 2, "Social": 3, "Misc": 4}
+    return post_recs(req_loc, type[req_type])
 
 }
 
@@ -54,3 +55,5 @@ let post_recs = (loc, type) => {
     return response["people"]
 
 }
+
+export default post;
