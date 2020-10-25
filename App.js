@@ -10,6 +10,8 @@ import 'firebase/analytics';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import getRequests from './requests.js';
 import './post.js';
+import './new_user.js';
+import new_user from './new_user.js';
 
 firebase.initializeApp({
   apiKey: "AIzaSyCvi2swwP019a9pmwztVjWnXs1pLpjYGf8",
@@ -57,12 +59,45 @@ function SignIn() {
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
+
+  }
+
+  const UserForm = () => {
+    username = auth.currentUser.displayName;
+
+    let newUserForm = (<></>)
+    if (db.ref("users").orderByChild("name").equalTo(username).get().val() === null) {
+      newUserForm = (<>
+        <form onSubmit={new_user(username)}>
+          <label for="type">What is your favorite category of deed to do?</label>
+          <select name="type" id="type">
+            <option value="Food">Food</option>
+            <option value="Medicine">Medicine</option>
+            <option value="Social">Social</option>
+            <option value="Misc">Misc</option>
+          </select>
+          <p><strong>This is used to pair you with users you can help the most</strong></p>
+
+          <label for="loc">What is your ZIP Code?</label>
+          <input placeholder="ZIP Code" name="loc" id="loc"/>
+          <p><strong>This is used to find users near you, who you can easily meet and help</strong></p>
+
+          <label for="contact">How can others contact you?</label>
+          <input placeholder="Contact Information" name="contact" id="contact"/>
+
+        </form>
+      </>)
+    }
+
+    return newUserForm;
   }
 
   return (
     <>
       <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
-      <p>Do not violate the community guidelines or you will be banned for life!</p>
+      <p>Please engage in civil discussion on the forum</p>
+
+      {UserForm()}
     </>
   )
 
@@ -77,7 +112,7 @@ function SignOut() {
 
 function Feed() {
   
-  requests = getRequests(db, auth.getAuth())
+  requests = getRequests(db, auth.currentUser.displayName)
 
   return (<>
     <div className={"feed"}>
@@ -127,12 +162,12 @@ function PostPage() {
 function PostForm() {
 
   return (<>
-  <form onSubmit={setRecs(post())}>
+  <form onSubmit={setRecs(post(auth.currentUser.displayName))}>
     <label for="text">Description</label>
     <textarea id="text" name="text" placeholder="I need help with..." rows="3"></textarea>
 
-    <label for="type">What type of request is this?</label>
-    <select name="type" id="type">
+    <label for="post_type">What type of request is this?</label>
+    <select name="post_type" id="post_type">
       <option value="Food">Food</option>
       <option value="Medicine">Medicine</option>
       <option value="Social">Social</option>

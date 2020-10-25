@@ -14,10 +14,9 @@ firebase.initializeApp({
 const db = firebase.database()
 
 
-let post = () => {
+let post = (req_name) => {
 
-    let req_type = document.getElementById("type")
-    let req_name = document.getElementById("name")
+    let req_type = document.getElementById("post_type")
     let req_text = document.getElementById("text")
 
     let query = db.ref("users").orderByChild("name").equalTo(req_name).get().val()
