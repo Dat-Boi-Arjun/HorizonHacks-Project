@@ -2,11 +2,12 @@ from firebase import Firebase
 import clusters
 
 config = {
-  "apiKey": "",
-  "authDomain": "",
-  "databaseURL": "",
-  "storageBucket": ""
+  "apiKey": "AIzaSyCvi2swwP019a9pmwztVjWnXs1pLpjYGf8",
+  "authDomain": "horizon-bff5f.firebaseapp.com",
+  "databaseURL": "https://horizon-bff5f.firebaseio.com",
+  "storageBucket": "horizon-bff5f.appspot.com"
 }
+
 
 firebase = Firebase(config)
 db = firebase.database()
