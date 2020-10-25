@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './App.css';
+import './requests.js'
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -7,7 +8,7 @@ import 'firebase/auth';
 import 'firebase/analytics';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import getRequests from './requests.js';
 
 firebase.initializeApp({
   apiKey: "AIzaSyCvi2swwP019a9pmwztVjWnXs1pLpjYGf8",
@@ -23,7 +24,7 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const analytics = firebase.analytics();
-db = firebase.database();
+const db = firebase.database();
 
 
 function App() {
@@ -38,7 +39,7 @@ function App() {
       </header>
 
       <section>
-        {user ? <ChatRoom /> : <SignIn />}
+        {user ? <Feed /> : <SignIn />}
       </section>
 
     </div>
@@ -67,65 +68,31 @@ function SignOut() {
   )
 }
 
-function getRequests(username) {
-  loc = db.ref("users").orderByChild("name").equalTo(username).get().val().values()[0]["location"]
-  reqs = db.ref("requests").orderByChild("location").equalTo(loc).limitToLast(10).get().val().values()
-  return reqs
-}
 
-function ChatRoom() {
-  const dummy = useRef();
-  const messagesRef = firestore.collection('messages');
+function Feed() {
   
-  const query = messagesRef.orderBy('createdAt').limit(25);
-
-  const [messages] = useCollectionData(query, { idField: 'id' });
-  const [formValue, setFormValue] = useState('');
-  
-
-  const sendMessage = async (e) => {
-    e.preventDefault();
-
-    const { uid, photoURL } = auth.currentUser;
-
-    await messagesRef.add({
-      text: formValue,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      uid,
-      photoURL
-    })
-
-    setFormValue('');
-    dummy.current.scrollIntoView({ behavior: 'smooth' });
-  }
+  requests = getRequests(db, auth.getAuth())
 
   return (<>
-    <main>
+    <div className="feed">
 
-      {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
+      {requests.map(req => <Request key={Math.floor(Math.random() * 10000).toString()} 
+      name={req["name"]} contact={req["contact"]} 
+      type={req["type"]} text={req["text"]}/>)}
 
-      <span ref={dummy}></span>
-
-    </main>
-
-    <form onSubmit={sendMessage}>
-
-      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Send a message" />
-
-      <button type="submit" disabled={!formValue}>↑</button>
-
-    </form>
-  </>)
+    </div>
+    </>)
 }
 
 
-function ChatMessage(props) {
-  const { text, uid, photoURL } = props.message;
+function Request(props) {
+  const { name, contact, type, text} = props.message;
 
-  const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
   return (<>
-    <div className={`message ${messageClass}`}>
-      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
+    <div className={"request"}>
+      <p>{name}</p>
+      <p>{contact}</p>
+      <p>{type}</p>
       <p>{text}</p>
     </div>
   </>)

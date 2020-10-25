@@ -11,14 +11,12 @@ firebase.initializeApp({
     measurementId: "G-D9NMD37CRG"
 })
 
-firebase.initializeApp(firebaseConfig);
-let db = firebase.database()
+const db = firebase.database()
 
 
 let post = () => {
 
     let req_type = document.getElementById("type")
-    let req_loc = document.getElementById("location")
     let req_name = document.getElementById("name")
     let req_text = document.getElementById("text")
 
@@ -26,11 +24,11 @@ let post = () => {
     let match = query.values()[0]
     let name = match["name"]
     let contact = match["contact_info"]
+    let req_loc = match["location"]
 
     let req = {
         name: name,
         contact: contact,
-        location: req_loc,
         type: req_type,
         text: req_text
     };

@@ -15,7 +15,7 @@ var firebaseConfig = {
 // Initialize Firebase  
 
 firebase.initializeApp(firebaseConfig);
-let database = firebase.database();
+const database = firebase.database();
 
 preferences = {"Food": 1, "Medicine": 2, "Social": 3, "Misc": 4}
 
@@ -25,12 +25,14 @@ var new_user = () => {
     let psw = document.getElementById("psw").value
     let loc = document.getElementById("loc").value.slice(0, 3)
     let pref = preferences[document.getElementById("pref").value]
+    let contact_info = document.getElementById("contact")
 
     let entry = {
         name: name,
         password: psw,
+        contact_info: contact,
         location: loc,
-        preference: pref,
+        preference: pref
     }
     
     database.ref("users").push(entry)
