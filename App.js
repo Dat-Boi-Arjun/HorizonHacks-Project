@@ -47,7 +47,7 @@ function App() {
       </section>
 
       <section>
-        <PostPage/>
+        <PostPage recs={recs}/>
       </section>
 
     </div>
@@ -63,7 +63,7 @@ function SignIn() {
   }
 
   const UserForm = () => {
-    username = auth.currentUser.displayName;
+    let username = auth.currentUser.displayName;
 
     let newUserForm = (<></>)
     if (db.ref("users").orderByChild("name").equalTo(username).get().val() === null) {
@@ -112,7 +112,7 @@ function SignOut() {
 
 function Feed() {
   
-  requests = getRequests(db, auth.currentUser.displayName)
+  let requests = getRequests(db, auth.currentUser.displayName)
 
   return (<>
     <div className={"feed"}>
@@ -139,7 +139,9 @@ function Request(props) {
   </>)
 }
 
-function PostPage() {
+function PostPage(props) {
+
+  const {recs, setRecs} = props.message;
 
   for (let r in recs) {
     let query = db.ref("users").orderByChild("name").equalTo(r).get().val()
@@ -152,7 +154,7 @@ function PostPage() {
 
   return (<>
     <div className={"postpage"}>
-      <PostForm/>
+      <PostForm setRecs={setRecs}/>
       <h2>These people could help you with your request:</h2>
       {postRecs}
     </div>
@@ -160,6 +162,8 @@ function PostPage() {
 }
 
 function PostForm() {
+
+  const setRecs = props.message;
 
   return (<>
   <form onSubmit={setRecs(post(auth.currentUser.displayName))}>
