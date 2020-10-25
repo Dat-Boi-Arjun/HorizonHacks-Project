@@ -14,6 +14,7 @@ firebase.initializeApp({
 firebase.initializeApp(firebaseConfig);
 let db = firebase.database()
 
+
 let post = () => {
 
     let req_type = document.getElementById("type")
@@ -36,4 +37,22 @@ let post = () => {
 
 
     db.ref("requests").push(req)
+
+    return post_recs(req_loc, req_type)
+
+}
+
+let post_recs = (loc, type) => {
+
+
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.open("POST", "localhost:8080/rec", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("loc=" + loc + "&type=" + type);
+
+    let response = JSON.parse(xhttp.responseText);
+
+    return response["people"]
+
 }
