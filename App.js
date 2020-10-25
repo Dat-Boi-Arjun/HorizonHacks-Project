@@ -10,19 +10,20 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAJoK39g-J5rnJQ85Lm0xy_S-otM_HM18E",
-  authDomain: "fir-second-1195f.firebaseapp.com",
-  databaseURL: "https://fir-second-1195f.firebaseio.com",
-  projectId: "fir-second-1195f",
-  storageBucket: "fir-second-1195f.appspot.com",
-  messagingSenderId: "269366967626",
-  appId: "1:269366967626:web:afbca65e6416fb515195b3",
-  measurementId: "G-4CWNLJ482Z"
+  apiKey: "AIzaSyCvi2swwP019a9pmwztVjWnXs1pLpjYGf8",
+  authDomain: "horizon-bff5f.firebaseapp.com",
+  databaseURL: "https://horizon-bff5f.firebaseio.com",
+  projectId: "horizon-bff5f",
+  storageBucket: "horizon-bff5f.appspot.com",
+  messagingSenderId: "253288550368",
+  appId: "1:253288550368:web:9d6389487c3c4dd5b1a585",
+  measurementId: "G-D9NMD37CRG"
 })
 
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const analytics = firebase.analytics();
+db = firebase.database();
 
 
 function App() {
@@ -66,6 +67,11 @@ function SignOut() {
   )
 }
 
+function getRequests(username) {
+  loc = db.ref("users").orderByChild("name").equalTo(username).get().val().values()[0]["location"]
+  reqs = db.ref("requests").orderByChild("location").equalTo(loc).limitToLast(10).get().val().values()
+  return reqs
+}
 
 function ChatRoom() {
   const dummy = useRef();
