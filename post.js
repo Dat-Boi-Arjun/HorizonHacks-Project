@@ -22,10 +22,10 @@ let post = () => {
     let req_name = document.getElementById("name")
     let req_text = document.getElementById("text")
 
-    query = db.ref("users").orderByChild("name").equalTo(req_name).get().val()
-    match = query.values()[0]
-    name = match["name"]
-    contact = match["contact_info"]
+    let query = db.ref("users").orderByChild("name").equalTo(req_name).get().val()
+    let match = query.values()[0]
+    let name = match["name"]
+    let contact = match["contact_info"]
 
     let req = {
         name: name,
