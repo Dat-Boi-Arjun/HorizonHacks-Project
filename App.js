@@ -25,8 +25,6 @@ firebase.initializeApp({
 })
 
 const auth = firebase.auth();
-const firestore = firebase.firestore();
-const analytics = firebase.analytics();
 const db = firebase.database();
 
 
@@ -47,7 +45,7 @@ function App() {
       </section>
 
       <section>
-        <PostPage recs={recs}/>
+        <PostPage recs={recs} setRecs={setRecs}/>
       </section>
 
     </div>
@@ -149,7 +147,7 @@ function PostPage(props) {
     let name = match["name"]
     let contact = match["contact_info"]
     let postRecs = []
-    postRecs.push(<PostRecs name={name} contact={contact}/>)
+    postRecs.push(<Post Recs name={name} contact={contact}/>)
   }
 
   return (<>
